@@ -11,14 +11,19 @@ import java.util.List;
 import java.util.Optional;
 
 public class TaskRepository {
-  private static final String TASKS_DIRECTORY = "tasks";
+  private final String tasksDirectory;
 
   public TaskRepository() {
+    this("tasks");
+  }
+
+  public TaskRepository(String tasksDirectory) {
+    this.tasksDirectory = tasksDirectory;
     createTasksDirectoryIfNotExists();
   }
 
   private void createTasksDirectoryIfNotExists() {
-    File directory = new File(TASKS_DIRECTORY);
+    File directory = new File(tasksDirectory);
     if (!directory.exists()) {
       directory.mkdirs();
     }
@@ -26,7 +31,7 @@ public class TaskRepository {
 
   public List<Task> findAll() {
     List<Task> tasks = new ArrayList<>();
-    File directory = new File(TASKS_DIRECTORY);
+    File directory = new File(tasksDirectory);
 
     if (directory.exists() && directory.isDirectory()) {
       File[] files = directory.listFiles((dir, name) -> name.endsWith(".json"));
@@ -36,7 +41,7 @@ public class TaskRepository {
             String json = Files.readString(file.toPath());
             Task task = JsonParser.fromJson(json, Task.class);
             tasks.add(task);
-          } catch (IOException e) {
+          } catch (IOException | RuntimeException e) {
             // Skipping invalid task file, continuing with other tasks
           }
         }
@@ -47,7 +52,7 @@ public class TaskRepository {
   }
 
   public Optional<Task> findById(String id) {
-    Path filePath = Paths.get(TASKS_DIRECTORY, id + ".json");
+    Path filePath = Paths.get(tasksDirectory, id + ".json");
     if (Files.exists(filePath)) {
       try {
         String json = Files.readString(filePath);
@@ -61,7 +66,7 @@ public class TaskRepository {
   }
 
   public Task save(Task task) {
-    Path filePath = Paths.get(TASKS_DIRECTORY, task.id() + ".json");
+    Path filePath = Paths.get(tasksDirectory, task.id() + ".json");
     try {
       String json = JsonParser.toJson(task);
       Files.writeString(filePath, json);
@@ -72,7 +77,7 @@ public class TaskRepository {
   }
 
   public void delete(String id) {
-    Path filePath = Paths.get(TASKS_DIRECTORY, id + ".json");
+    Path filePath = Paths.get(tasksDirectory, id + ".json");
     try {
       Files.deleteIfExists(filePath);
     } catch (IOException e) {
