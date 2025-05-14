@@ -1,8 +1,9 @@
 package edu.austral.dissis.todos.fall.uuid;
 
-public class Uuid {
+public class UUID {
 
-  public static String generate() {
-    return java.util.UUID.randomUUID().toString();
-  }
+    public static String generate() {
+        return java.util.UUID.randomUUID().toString();
+    }
+
 }

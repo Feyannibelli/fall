@@ -1,47 +1,47 @@
 package edu.austral.dissis.todos.fall.json;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import org.junit.jupiter.api.Test;
 
-public class JsonTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-  @Test
-  public void shouldParsePersonJson() {
+public class JSONTest {
 
-    record Person(String name, int age) {}
+    @Test
+    public void shouldParsePersonJSON() {
 
-    String json =
-        """
+        record Person(String name, int age) {
+        }
+
+        String json = """
                 {
                     "name": "John",
                     "age": 30
                 }
                 """;
-    Person person = JsonParser.fromJson(json, Person.class);
-    assertEquals("John", person.name());
-    assertEquals(30, person.age());
-  }
+        Person person = JSONParser.fromJSON(json, Person.class);
+        assertEquals("John", person.name());
+        assertEquals(30, person.age());
+    }
 
-  @Test
-  public void shouldWritePersonJson() {
+    @Test
+    public void shouldWritePersonJSON() {
 
-    record Person(String name, int age) {}
+        record Person(String name, int age) {
+        }
 
-    Person person = new Person("John", 30);
-    String json = JsonParser.toJson(person);
-    assertEquals(
-        formatJson(
-            """
+        Person person = new Person("John", 30);
+        String json = JSONParser.toJSON(person);
+        assertEquals(formatJSON("""
                 {
                     "name": "John",
                     "age": 30
                 }
-                """),
-        formatJson(json));
-  }
+                """), formatJSON(json));
+    }
 
-  private String formatJson(String json) {
-    return json.replaceAll("\\s*([{}\\[\\]:,\"])\\s*", "$1");
-  }
+    private String formatJSON(String json) {
+        return json.replaceAll("\\s*([{}\\[\\]:,\"])\\s*", "$1");
+    }
+
+
 }
